@@ -21,6 +21,7 @@
     "uuid": "^11.0.5"
   },
   "devDependencies": {
+    "@simplewebauthn/server": "^13.0.0",
     "@types/bcrypt": "^5.0.2",
     "@types/cors": "^2.8.17",
     "@types/express": "^5.0.0",

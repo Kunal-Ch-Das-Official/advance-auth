@@ -3,6 +3,7 @@ import authUserModel from "../model/userModel";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import envConfig from "../config/env";
+import { generateRegistrationOptions } from "@simplewebauthn/server";
 
 const handleNewRegistration = async (
   req: Request,
@@ -47,26 +48,87 @@ const handleNewRegistration = async (
                 { authUserId: getJustCreatedUser._id },
                 envConfig.jwtSecretKey,
                 {
-                  expiresIn: "3d",
+                  expiresIn: "1d",
                 }
               );
 
-              // ! Send successful response
+              // ! Send successful response.....
               if (token) {
-                return <any>res.status(201).json({
-                  message: "Registration successfull!",
-                  details: "Congratulations!",
-                });
+
+
+                // ! Find The User by Email.....
+                const getUserName = await authUserModel.findOne({ email });
+                
+                if (getUserName) {
+                  // ! Create passkey challenge......
+                  const challengePayload = await generateRegistrationOptions({
+                    rpID: envConfig.relyingPartyId,
+                    rpName: envConfig.relyingPartyName,
+                    userName: getUserName?.username,
+                  });
+
+                  if(challengePayload){
+                  // ! Find id of the user......
+                  const getUserId = getUserName._id;
+
+                  // TODO: If Id Exists then......
+                  if (getUserId) {
+
+                    // TODO: Add the created passkeys......
+                    const getUserAndAddChallenge = await authUserModel.findByIdAndUpdate(
+                      getUserId,
+                      { privateKey: challengePayload.challenge },
+                      {
+                        new: true,
+                      }
+                    );
+                    if(!getUserAndAddChallenge){
+                      return <any>res.status(501).json({
+                        message: "Not Implemented!",
+                        status: 501,
+                        details: "Challenge was not saved!",
+                      });
+                    }else{
+                      return <any>res.status(201).json({
+                        message: "Registration successfull!",
+                        details: "Congratulations!",
+                        privateKey: challengePayload
+                      });
+                    }
+                  }else{
+                    return <any>res.status(404).json({
+                      issues: "User id found!",
+                      status: 404,
+                      details: "The user id was not found, please try again.",
+                    });
+                  }
+                  }else{
+                    return <any>res.status(501).json({
+                      message: "Not Implemented!",
+                      status: 501,
+                      details: "Challenge was not created!",
+                    });
+                  }
+
+
+                }else{
+                  return <any>res.status(404).json({
+                    issues: "User not found!",
+                    status: 404,
+                    details: "The user not found, please try again.",
+                  });
+                }
               } else {
                 return <any>res.status(501).json({
                   message: "Not Implemented!",
+                  status: 501,
                   details: "Token not been assigned!",
                 });
               }
             } else {
               return <any>res.status(404).json({
                 issues: "User not found!",
-                status: 501,
+                status: 404,
                 details: "The user not found, please try again.",
               });
             }
