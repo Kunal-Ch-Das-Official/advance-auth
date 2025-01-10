@@ -1,0 +1,11 @@
+{
+  "name": "advance-auth",
+  "version": "0.0.0",
+  "description": "This a complete authentication code with faceid, fingerprint, and passkey authentication",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Kunal Chandra Das",
+  "license": "MIT"
+}
