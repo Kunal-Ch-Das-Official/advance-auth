@@ -1,6 +1,7 @@
 interface EnvTypes {
 port: number,
-dbConnectionString: string
+dbConnectionString: string,
+jwtSecretKey: string
 }
 
 export default EnvTypes;
