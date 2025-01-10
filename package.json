@@ -2,10 +2,26 @@
   "name": "advance-auth",
   "version": "0.0.0",
   "description": "This a complete authentication code with faceid, fingerprint, and passkey authentication",
-  "main": "index.js",
+  "main": "index.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon src/index.ts",
+    "start": "node dist/index.js",
+    "build": "npx tsc"
   },
   "author": "Kunal Chandra Das",
-  "license": "MIT"
+  "date": "10-01-2025",
+  "license": "MIT",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "mongoose": "^8.9.4"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.17",
+    "@types/express": "^5.0.0",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.7.3"
+  }
 }
